@@ -24,7 +24,7 @@ h1 {
 .color-tile {
   width: 150px;
   height: 150px;
-  border: none;
+  border: 5px solid black;
   border-radius: 10px;
   cursor: pointer;
   transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
