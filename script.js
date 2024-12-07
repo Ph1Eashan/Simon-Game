@@ -3,13 +3,14 @@ let playerSequence = []; // Stores the player's sequence
 let level = 0;           // Tracks the current level
 let isGameActive = false;
 const startBtn = document.getElementById("start-btn");
+const startOverBtn = document.getElementById("start-over-btn");
 const message = document.getElementById("message");
 const levelText = document.getElementById("level-text");
 const tiles = document.querySelectorAll(".color-tile");
 
 // Sound files for tiles
-const correctSound = new Audio("sounds/click.mp3"); // For all correct tiles
-const wrongSound = new Audio("sounds/wrongClick.mp3"); // For incorrect clicks
+const correctSound = new Audio("sounds/correct.mp3"); // For all correct tiles
+const wrongSound = new Audio("sounds/wrong.mp3"); // For incorrect clicks
 
 // Show start button only on small screens
 if (window.innerWidth < 600) {
@@ -21,6 +22,7 @@ if (window.innerWidth < 600) {
 // Start the game on key press or start button click
 document.addEventListener("keydown", startGame);
 startBtn.addEventListener("click", startGame);
+startOverBtn.addEventListener("click", startGame);  // Restart the game on "Start Over" button click
 
 function startGame() {
   if (!isGameActive) {
@@ -38,6 +40,10 @@ function resetGame() {
   message.textContent = "";
   levelText.textContent = `Level ${level}`;
   document.body.style.backgroundColor = ""; // Reset background flicker
+  
+  // Hide Start button and show Start Over button
+  startBtn.style.display = "none";
+  startOverBtn.style.display = "none";  // Hide Start Over button when starting a new game
 }
 
 // Start the next level
@@ -118,6 +124,9 @@ function handleLoss() {
     }
   }, 300);  // 300ms flicker interval
   
+  // Show Start Over button and hide Start button
+  startOverBtn.style.display = "inline-block"; 
+  startBtn.style.display = "none"; // Hide Start button after the game ends
+
   isGameActive = false;  // Game ends after loss
 }
-
