@@ -15,6 +15,7 @@ const wrongSound = new Audio("sounds/wrong.mp3"); // For incorrect clicks
 // Show start button only on small screens
 if (window.innerWidth < 600) {
   startBtn.style.display = "inline-block";
+  levelText.textContent = "Press the button to start";  // Change message for small screens
 } else {
   levelText.textContent = "Press any key to start";
 }
@@ -109,7 +110,12 @@ function checkPlayerMove() {
 
 // Handle game loss (incorrect move)
 function handleLoss() {
-  levelText.textContent = "Snap! You lost, press any key to restart";
+  // Check screen width and set the message accordingly
+  if (window.innerWidth < 600) {
+    levelText.textContent = "Snap! You lost, press the button to restart";
+  } else {
+    levelText.textContent = "Snap! You lost, press any key to restart";
+  }
   
   // Flicker red three times
   let flickerCount = 0;
