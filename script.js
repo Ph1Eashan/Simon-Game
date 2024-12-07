@@ -36,19 +36,27 @@ function nextLevel() {
 
 // Play the sequence to the user
 function playSequence() {
-  let delay = 0;
-  gameSequence.forEach((color, index) => {
-    setTimeout(() => highlightTile(color), delay);
-    delay += 1000;
-  });
-}
+    let delay = 0;
+  
+    // Play each color in the sequence with a delay
+    gameSequence.forEach((color) => {
+      setTimeout(() => highlightTile(color), delay);
+      delay += 700; // Increase the delay to ensure a smooth transition
+    });
+  }
 
 // Highlight a tile
 function highlightTile(color) {
-  const tile = document.querySelector(`.color-tile[data-color="${color}"]`);
-  tile.style.opacity = "0.5";
-  setTimeout(() => (tile.style.opacity = "1"), 500);
-}
+    const tile = document.querySelector(`.color-tile[data-color="${color}"]`);
+  
+    // Add the active class to trigger the animation
+    tile.classList.add("active");
+  
+    // Remove the active class after the animation duration
+    setTimeout(() => {
+      tile.classList.remove("active");
+    }, 500); // Matches the duration of the CSS animation
+  }
 
 // Handle user clicks
 tiles.forEach(tile => {
