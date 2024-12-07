@@ -1,82 +1,123 @@
-// Initialize game variables
-let gameSequence = [];
-let playerSequence = [];
-let level = 0;
-
-// Get DOM elements
+let gameSequence = [];  // Stores the sequence the game generates
+let playerSequence = []; // Stores the player's sequence
+let level = 0;           // Tracks the current level
+let isGameActive = false;
 const startBtn = document.getElementById("start-btn");
 const message = document.getElementById("message");
+const levelText = document.getElementById("level-text");
 const tiles = document.querySelectorAll(".color-tile");
 
-// Start the game
+// Sound files for tiles
+const correctSound = new Audio("sounds/click.mp3"); // For all correct tiles
+const wrongSound = new Audio("sounds/wrongClick.mp3"); // For incorrect clicks
+
+// Show start button only on small screens
+if (window.innerWidth < 600) {
+  startBtn.style.display = "inline-block";
+} else {
+  levelText.textContent = "Press any key to start";
+}
+
+// Start the game on key press or start button click
+document.addEventListener("keydown", startGame);
 startBtn.addEventListener("click", startGame);
 
 function startGame() {
-  resetGame();
-  nextLevel();
+  if (!isGameActive) {
+    resetGame();
+    nextLevel();
+  }
 }
 
-// Reset game state
+// Reset game
 function resetGame() {
   gameSequence = [];
   playerSequence = [];
   level = 0;
+  isGameActive = true;
   message.textContent = "";
+  levelText.textContent = `Level ${level}`;
+  document.body.style.backgroundColor = ""; // Reset background flicker
 }
 
-// Generate a new level
+// Start the next level
 function nextLevel() {
   level++;
   playerSequence = [];
-  message.textContent = `Level ${level}`;
+  levelText.textContent = `Level ${level}`;
+  
+  // Add a new tile to the game sequence
   const randomColor = tiles[Math.floor(Math.random() * tiles.length)].dataset.color;
   gameSequence.push(randomColor);
-  playSequence();
+
+  // Show only the new color for this level
+  setTimeout(() => playSequence(randomColor), 500);  // Show only the new tile after a short delay
 }
 
-// Play the sequence to the user
-function playSequence() {
-    let delay = 0;
-  
-    // Play each color in the sequence with a delay
-    gameSequence.forEach((color) => {
-      setTimeout(() => highlightTile(color), delay);
-      delay += 700; // Increase the delay to ensure a smooth transition
-    });
-  }
+// Play the sequence - only the new tile
+function playSequence(newColor) {
+  highlightTile(newColor);
+  playSound();  // Play the common sound for the new tile
+}
 
-// Highlight a tile
+// Highlight tile with animation
 function highlightTile(color) {
-    const tile = document.querySelector(`.color-tile[data-color="${color}"]`);
-  
-    // Add the active class to trigger the animation
-    tile.classList.add("active");
-  
-    // Remove the active class after the animation duration
-    setTimeout(() => {
-      tile.classList.remove("active");
-    }, 500); // Matches the duration of the CSS animation
-  }
+  const tile = document.querySelector(`.color-tile[data-color="${color}"]`);
+  tile.classList.add("active");
 
-// Handle user clicks
+  // Flicker animation (tile glows briefly)
+  setTimeout(() => tile.classList.remove("active"), 500);
+}
+
+// Play sound for the tile (correct tile)
+function playSound() {
+  correctSound.play();  // Play the same sound for all correct tiles
+}
+
+// Handle player click
 tiles.forEach(tile => {
   tile.addEventListener("click", () => {
+    if (!isGameActive) return;  // Prevent interaction if game is over
     const selectedColor = tile.dataset.color;
     playerSequence.push(selectedColor);
+    
     highlightTile(selectedColor);
+    playSound();
+
     checkPlayerMove();
   });
 });
 
-// Check player move
+// Check player's move
 function checkPlayerMove() {
   const currentMoveIndex = playerSequence.length - 1;
+
+  // If the player's move is wrong, play the wrong sound and end the game
   if (playerSequence[currentMoveIndex] !== gameSequence[currentMoveIndex]) {
-    message.textContent = "Game Over! Press Start to try again.";
-    return;
-  }
-  
-  if (playerSequence.length === gameSequence.length) {
-    setTimeout(nextLevel, 1000);
+    wrongSound.play();  // Play the wrong sound when an incorrect tile is clicked
+    handleLoss();       // Handle the loss (flicker and reset)
+  } else if (playerSequence.length === gameSequence.length) {
+    setTimeout(nextLevel, 1000); // Move to next level after delay
   }
 }
+
+// Handle game loss (incorrect move)
+function handleLoss() {
+  levelText.textContent = "Snap! You lost, press any key to restart";
+  
+  // Flicker red three times
+  let flickerCount = 0;
+  const flickerInterval = setInterval(() => {
+    document.body.style.backgroundColor = (flickerCount % 2 === 0) ? "red" : ""; // Toggle red on/off
+    flickerCount++;
+
+    // Stop flickering after 3 times
+    if (flickerCount >= 6) {
+      clearInterval(flickerInterval);  // Stop the interval after 3 flickers (6 changes)
+      document.body.style.backgroundColor = ""; // Ensure background is reset
+    }
+  }, 300);  // 300ms flicker interval
+  
+  isGameActive = false;  // Game ends after loss
+}
+

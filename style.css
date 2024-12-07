@@ -1,10 +1,14 @@
-body {
-  background-color: #f8f9fa;
-}
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
 
+body {
+  background-color: rgb(29, 29, 99);
+  color: yellow;
+  font-family: "Press Start 2P", system-ui;
+}
+/* 
 h1 {
   color: #343a40;
-}
+} */
 
 #game-board {
   display: grid;
@@ -16,20 +20,22 @@ h1 {
   margin: 0 auto;
 }
 
+/* Default styling for the tiles */
 .color-tile {
-  width: 100%;
-  height: 100%;
+  width: 150px;
+  height: 150px;
   border: none;
-  border-radius: 5px;
+  border-radius: 10px;
   cursor: pointer;
   transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
 }
 
+/* When the tile is highlighted */
 .color-tile.active {
-  transform: scale(1.2); 
-  box-shadow: 0 0 30px rgba(255, 255, 255, 0.8); 
-  filter: brightness(1.5); 
+  transform: scale(1.1);
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.8);
 }
+
 
 
 .color-tile:hover {
@@ -38,4 +44,11 @@ h1 {
 
 #message {
   font-weight: bold;
+}
+
+/* When the screen width is less than 600px, hide the start button */
+@media (min-width: 600px) {
+  #start-btn {
+    display: none;
+  }
 }
