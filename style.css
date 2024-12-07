@@ -51,4 +51,8 @@ h1 {
   #start-btn {
     display: none;
   }
+
+  #start-over-btn {
+    display: none !important; /* Force-hide Start Over button for larger screens */
+  }
 }

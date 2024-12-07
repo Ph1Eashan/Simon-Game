@@ -113,8 +113,10 @@ function handleLoss() {
   // Check screen width and set the message accordingly
   if (window.innerWidth < 600) {
     levelText.textContent = "Snap! You lost, press the button to restart";
+    startOverBtn.style.display = "inline-block"; // Show "Start Over" button for small screens
   } else {
     levelText.textContent = "Snap! You lost, press any key to restart";
+    startOverBtn.style.display = "none"; // Hide "Start Over" button for larger screens
   }
   
   // Flicker red three times
